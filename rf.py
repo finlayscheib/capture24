@@ -16,7 +16,8 @@ DEFAULT_ATTRIBUTES = {
     'oob_score': True,
     'n_jobs': 12,
     'random_state': 42,
-    'max_features': 'sqrt'
+    'max_features': 'sqrt',
+    'bootstrap': True # added
 }
 
 DEFAULT_PARAM_GRID = {

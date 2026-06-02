@@ -27,7 +27,7 @@ class Classifier:
 
     def _initialise_model(self, **kwargs):
         if 'RF' in self.type.upper().split('_'):
-            self.window_classifier = RandomForestClassifierWrapper(oob_score=True, random_state=self.seed, **kwargs)
+            self.window_classifier = RandomForestClassifierWrapper(oob_score=True, bootstrap = True, random_state=self.seed, **kwargs)
 
         elif 'XGB' in self.type.upper().split('_'):
             self.window_classifier = XGBoostClassifierWrapper(random_state=self.seed, **kwargs)

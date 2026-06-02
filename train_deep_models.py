@@ -13,7 +13,7 @@ from pytorch_lightning.callbacks import EarlyStopping
 from pytorch_lightning.callbacks import ModelCheckpoint
 from sklearn import metrics
 
-import  models
+import  deep_models as models
 from augmentation import Augment
 import  utils
 

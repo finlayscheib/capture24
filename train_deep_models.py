@@ -379,7 +379,7 @@ def main(cfg: DictConfig) -> None:
     # Trainer
     early_stop_callback = EarlyStopping(monitor='valid/loss', patience=cfg.early_stop_patience, mode='min')
     checkpoint_callback = ModelCheckpoint(monitor='valid/loss', mode='min', filename='best')
-    trainer = pl.Trainer(gpus=0, auto_select_gpus=True,
+    trainer = pl.Trainer(gpus=1, auto_select_gpus=True,
                          precision=16,
                          max_epochs=cfg.n_epochs,
                          callbacks=[early_stop_callback, checkpoint_callback],

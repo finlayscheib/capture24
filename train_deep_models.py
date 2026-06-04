@@ -214,8 +214,8 @@ class DataModule(pl.LightningDataModule):
         data_cfg = self.data_cfg
 
         X = np.load(os.path.join(data_cfg['datadir'], 'X.npy'))
-        Y = np.load(os.path.join(data_cfg['datadir'], 'Y_willetts.npy'))
-        pid = np.load(os.path.join(data_cfg['datadir'], 'pid.npy'))
+        Y = np.load(os.path.join(data_cfg['datadir'], 'Y_walmsley2020.npy'))
+        pid = np.load(os.path.join(data_cfg['datadir'], 'P.npy'))
 
         # deriv/test split: P001-P100 for derivation, the rest for testing
         whr_deriv = np.isin(pid, [f"P{i:03d}" for i in range(1, 101)])
@@ -379,7 +379,7 @@ def main(cfg: DictConfig) -> None:
     # Trainer
     early_stop_callback = EarlyStopping(monitor='valid/loss', patience=cfg.early_stop_patience, mode='min')
     checkpoint_callback = ModelCheckpoint(monitor='valid/loss', mode='min', filename='best')
-    trainer = pl.Trainer(gpus=1, auto_select_gpus=True,
+    trainer = pl.Trainer(gpus=0, auto_select_gpus=True,
                          precision=16,
                          max_epochs=cfg.n_epochs,
                          callbacks=[early_stop_callback, checkpoint_callback],

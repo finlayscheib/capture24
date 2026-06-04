@@ -1,0 +1,7 @@
+- data.datadir=smoke_test
+- dataloader.train.num_workers=0
+- dataloader.valid.num_workers=0
+- dataloader.test.num_workers=0
+- n_epochs=2
+- limit_train_batches=2
+- limit_val_batches=2

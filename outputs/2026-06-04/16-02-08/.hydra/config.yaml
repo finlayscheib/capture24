@@ -1,0 +1,114 @@
+data:
+  name: default
+  datadir: smoke_test
+  val_size: 20
+  seq_length: 8
+model:
+  name: default
+  n_channels: 3
+  outsize: 6
+  n_filters:
+  - 128
+  - 128
+  - 256
+  - 256
+  - 512
+  - 512
+  kernel_size:
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  n_resblocks:
+  - 0
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  resblock_kernel_size:
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  downfactor:
+  - 2
+  - 2
+  - 2
+  - 5
+  - 5
+  - 5
+  downorder:
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  drop1: 0
+  drop2: 0.5
+  fc_size: 1024
+  is_cnnlstm: true
+optim:
+  name: default
+  method: sgd
+  adam:
+    lr: 0.0003
+    amsgrad: true
+  sgd:
+    lr: 0.3
+  cosine_annealing:
+    T_0: 1
+    T_mult: 1
+    eta_min: 0
+  swa:
+    start: 999
+    lr: 0.05
+augment:
+  name: default
+  shift:
+    window: 200
+    prob: 1.0
+  jitter:
+    sigma: 0.0
+    prob: 0.0
+  twarp:
+    sigma: 0.05
+    knots: 4
+    prob: 1.0
+  mwarp:
+    sigma: 0.05
+    knots: 2
+    prob: 1.0
+dataloader:
+  name: default
+  train:
+    batch_size: 64
+    num_workers: 0
+    seed: 12345
+  valid:
+    batch_size: 64
+    num_workers: 0
+    seed: 12345
+  test:
+    batch_size: 64
+    num_workers: 0
+    seed: 12345
+  predict:
+    batch_size: 64
+    num_workers: 22
+    seed: 12345
+name: default
+n_epochs: 2
+early_stop_patience: 10
+limit_train_batches: 2
+limit_val_batches: 2
+limit_test_batches: 1.0
+seed: 42
+ckpt_path: null
+fit: true
+test: true

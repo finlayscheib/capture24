@@ -56,7 +56,7 @@ class ModelModule(pl.LightningModule):
     def configure_optimizers(self):
         optim_cfg = self.optim_cfg
 
-        self.num_batches_per_epoch = len(self.train_dataloader())
+        self.num_batches_per_epoch = len(self.trainer.datamodule.train_dataloader())
 
         if optim_cfg["method"] == 'adam':
             optimizer = torch.optim.AdamW(
@@ -213,7 +213,7 @@ class DataModule(pl.LightningDataModule):
 
         data_cfg = self.data_cfg
 
-        X = np.load(os.path.join(data_cfg['datadir'], 'X.npy'))
+        X = np.load(os.path.join(data_cfg['datadir'], 'X.npy'), mmap_mode = 'r')
         Y = np.load(os.path.join(data_cfg['datadir'], 'Y_walmsley2020.npy'))
         pid = np.load(os.path.join(data_cfg['datadir'], 'P.npy'))
 

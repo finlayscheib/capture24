@@ -1,8 +1,10 @@
 import numpy as np
 import pandas as pd 
 import os
-!pip install pyts
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
 from pyts.image import GramianAngularField
 
 
@@ -10,9 +12,8 @@ from pyts.image import GramianAngularField
 
 anno_label_dict = pd.read_csv('data/capture24/annotation-label-dictionary.csv',
                               index_col='annotation', dtype='string')
-os.chdir ('data')
 
-
+#Helper functionm
 def extract_windows(data, winsize='30s'):
     X, Y = [], []
     for t, w in data.resample(winsize, origin='start'):
@@ -49,7 +50,8 @@ os.makedirs(path_GAF, exist_ok=True)
 directory_contents = [i for i in os.listdir(path_data) if i.endswith('.csv.gz')] # get the data file names
 print(f"Found {len(directory_contents)} files to process: {directory_contents}") # comment out at end
 
-print (directory_contents)
+#Initialise GADF method
+gadf = GramianAngularField(method='difference')
 p_cnt=1
 for j in (directory_contents):
     print(f"Processing: {j}")
@@ -89,7 +91,7 @@ for j in (directory_contents):
         fig, axs = plt.subplots(1, 1, figsize=(fig_w,fig_h))
         plt.axis('off')
         x = np.array([acc_x])
-        gadf = GramianAngularField(method='difference')
+
         X_gadf = gadf.fit_transform(x)
 
         axs.imshow(X_gadf[0],
@@ -99,14 +101,14 @@ for j in (directory_contents):
         plt.savefig(save_path_X, bbox_inches='tight',pad_inches = 0, dpi=100);
         print(j,img_cnt,figure_name_GAF_X) 
         fig.clf()
-        plt.close() 
+        plt.close(fig) 
 
 
         #plot Y
         fig, axs = plt.subplots(1, 1, figsize=(fig_w,fig_h))
         plt.axis('off')
         y = np.array([acc_y])
-        gadf = GramianAngularField(method='difference')
+    
         Y_gadf = gadf.fit_transform(y)
 
         axs.imshow(Y_gadf[0],
@@ -116,14 +118,14 @@ for j in (directory_contents):
         plt.savefig(save_path_Y, bbox_inches='tight',pad_inches = 0, dpi=100);
         print(j,img_cnt,figure_name_GAF_Y) 
         fig.clf()
-        plt.close() 
+        plt.close(fig) 
 
         
         #plot Z
         fig, axs = plt.subplots(1, 1, figsize=(fig_w,fig_h))
         plt.axis('off')
         z = np.array([acc_z])
-        gadf = GramianAngularField(method='difference')
+        
         z_gadf = gadf.fit_transform(z)
 
         axs.imshow(z_gadf[0],
@@ -133,7 +135,7 @@ for j in (directory_contents):
         plt.savefig(save_path_Z, bbox_inches='tight',pad_inches = 0, dpi=100);
         print(j,img_cnt,figure_name_GAF_Z) 
         fig.clf()
-        plt.close()
+        plt.close(fig)
         
              
                 
@@ -141,7 +143,7 @@ for j in (directory_contents):
         fig, axs = plt.subplots(1, 1, figsize=(fig_w,fig_h))
         plt.axis('off')
         v = np.array([acc_VM])
-        gadf = GramianAngularField(method='difference')
+        
         v_gadf = gadf.fit_transform(v)
 
         axs.imshow(v_gadf[0],
@@ -151,7 +153,7 @@ for j in (directory_contents):
         plt.savefig(save_path_VM, bbox_inches='tight',pad_inches = 0, dpi=100);
         print(j,img_cnt,figure_name_GAF_VM) 
         fig.clf()
-        plt.close()     
+        plt.close(fig)     
                 
         img_cnt+=1
         img_label_cnt+=1

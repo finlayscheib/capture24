@@ -77,10 +77,10 @@ for j in (directory_contents):
         acc_VM=np.sqrt((acc_x**2) + (acc_y**2) + (acc_z**2)) #compute vecor magnitude
         
 
-        figure_name_GAF_X='P'+f"{p_cnt:03}"+'_'+str(img_cnt)+'_GAF_X'+'_'+Y[img_label_cnt]+'.jpg'
-        figure_name_GAF_Y='P'+f"{p_cnt:03}"+'_'+str(img_cnt)+'_GAF_Y'+'_'+Y[img_label_cnt]+'.jpg'
-        figure_name_GAF_Z='P'+f"{p_cnt:03}"+'_'+str(img_cnt)+'_GAF_Z'+'_'+Y[img_label_cnt]+'.jpg'
-        figure_name_GAF_VM='P'+f"{p_cnt:03}"+'_'+str(img_cnt)+'_GAF_VM'+'_'+Y[img_label_cnt]+'.jpg'
+        figure_name_GAF_X='P'+f"{p_cnt:03}"+'_'+f"{img_cnt:04}"+'_GAF_X'+'_'+Y[img_label_cnt]+'.jpg'
+        figure_name_GAF_Y='P'+f"{p_cnt:03}"+'_'+f"{img_cnt:04}"+'_GAF_Y'+'_'+Y[img_label_cnt]+'.jpg'
+        figure_name_GAF_Z='P'+f"{p_cnt:03}"+'_'+f"{img_cnt:04}"+'_GAF_Z'+'_'+Y[img_label_cnt]+'.jpg'
+        figure_name_GAF_VM='P'+f"{p_cnt:03}"+'_'+f"{img_cnt:04}"+'_GAF_VM'+'_'+Y[img_label_cnt]+'.jpg'
 
         save_path_X = os.path.join(path_GAF, figure_name_GAF_X)
         save_path_Y = os.path.join(path_GAF, figure_name_GAF_Y)

@@ -6,6 +6,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 from pyts.image import GramianAngularField
+from scipy.signal import resample_poly
 
 
 ## read annotations
@@ -40,7 +41,7 @@ fig_w=2.24; fig_h=2.24;# figure width and height make 2.24 inches so that 224 by
 
 
 path_data=r"/exports/eddie/scratch/s2190468/capture24/data/capture24/" # data directory
-path_GAF=r"/exports/eddie/scratch/s2190468/capture24/data/GAF_ten/" # where GAF images will be saved
+path_GAF=r"/exports/eddie/scratch/s2190468/capture24/data/GAF_ds/" # where GAF images will be saved
 
 #make GAF folder to save files into
 #os.makedirs(path_GAF, exist_ok=True)
@@ -61,11 +62,16 @@ for j in (directory_contents):
     data = pd.read_csv(file_to_read, index_col='time', parse_dates=['time'],
                        dtype={'x': 'f4', 'y': 'f4', 'z': 'f4', 'annotation': 'string'}) 
     #label data
-    data['label'] = (anno_label_dict['label:WillettsSpecific2018']
+    data['label'] = (anno_label_dict['label:Walmsley2020']
                  .reindex(data['annotation'])
                  .to_numpy())
 
     X, Y = extract_windows(data) # extract data
+
+    # Adding in downsampling step of the windows 100Hz to 10Hz
+    if len(X)==0:
+        continue
+    X = resample_poly(X, up=10, down = 100, axis=1)
 
     participant_folder = f'P{p_cnt:03}' # Creates "P001", "P002", etc.
     participant_path = os.path.join(path_GAF, participant_folder)

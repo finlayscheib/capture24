@@ -36,14 +36,14 @@ def extract_windows(data, winsize='30s'):
 
 
 N=3000 # number of data points in each window
-fig_w=4; fig_h=4;# figure width and height
+fig_w=2.24; fig_h=2.24;# figure width and height make 2.24 inches so that 224 by 224 images
 
 
-path_data=r"C:\Users\Finla\OneDrive - University of Edinburgh\Diss\capture24\data\capture24" # data directory
-path_GAF=r"C:\Users\Finla\OneDrive - University of Edinburgh\Diss\capture24\data\GAF" # where GAF images will be saved
+path_data=r"/exports/eddie/scratch/s2190468/capture24/data/capture24/" # data directory
+path_GAF=r"/exports/eddie/scratch/s2190468/capture24/data/GAF_ten/" # where GAF images will be saved
 
 #make GAF folder to save files into
-os.makedirs(path_GAF, exist_ok=True)
+#os.makedirs(path_GAF, exist_ok=True)
 
 # working directory for data
 
@@ -51,7 +51,7 @@ directory_contents = [i for i in os.listdir(path_data) if i.endswith('.csv.gz')]
 print(f"Found {len(directory_contents)} files to process: {directory_contents}") # comment out at end
 
 #Initialise GADF method
-gadf = GramianAngularField(method='difference')
+gadf = GramianAngularField(image_size=224, method='difference')
 p_cnt=1
 for j in (directory_contents):
     print(f"Processing: {j}")
@@ -61,99 +61,62 @@ for j in (directory_contents):
     data = pd.read_csv(file_to_read, index_col='time', parse_dates=['time'],
                        dtype={'x': 'f4', 'y': 'f4', 'z': 'f4', 'annotation': 'string'}) 
     #label data
-    data['label'] = (anno_label_dict['label:Walmsley2020']
+    data['label'] = (anno_label_dict['label:WillettsSpecific2018']
                  .reindex(data['annotation'])
                  .to_numpy())
 
     X, Y = extract_windows(data) # extract data
 
-
+    participant_folder = f'P{p_cnt:03}' # Creates "P001", "P002", etc.
+    participant_path = os.path.join(path_GAF, participant_folder)
+    os.makedirs(participant_path, exist_ok=True)
+    
+    
     img_cnt=1
     img_label_cnt=0
     for i in X:
+      
         acc_x=i[:,0] # get x from the array
         acc_y=i[:,1] # get y from the array
         acc_z=i[:,2] # get z from the array
-        acc_VM=np.sqrt((acc_x**2) + (acc_y**2) + (acc_z**2)) #compute vecor magnitude
+        
         
 
         figure_name_GAF_X='P'+f"{p_cnt:03}"+'_'+f"{img_cnt:04}"+'_GAF_X'+'_'+Y[img_label_cnt]+'.jpg'
         figure_name_GAF_Y='P'+f"{p_cnt:03}"+'_'+f"{img_cnt:04}"+'_GAF_Y'+'_'+Y[img_label_cnt]+'.jpg'
         figure_name_GAF_Z='P'+f"{p_cnt:03}"+'_'+f"{img_cnt:04}"+'_GAF_Z'+'_'+Y[img_label_cnt]+'.jpg'
-        figure_name_GAF_VM='P'+f"{p_cnt:03}"+'_'+f"{img_cnt:04}"+'_GAF_VM'+'_'+Y[img_label_cnt]+'.jpg'
+        
 
-        save_path_X = os.path.join(path_GAF, figure_name_GAF_X)
-        save_path_Y = os.path.join(path_GAF, figure_name_GAF_Y)
-        save_path_Z = os.path.join(path_GAF, figure_name_GAF_Z)
-        save_path_VM = os.path.join(path_GAF, figure_name_GAF_VM)
+        save_path_X = os.path.join(participant_path, figure_name_GAF_X)
+        save_path_Y = os.path.join(participant_path, figure_name_GAF_Y)
+        save_path_Z = os.path.join(participant_path, figure_name_GAF_Z)
+        
+        
+#        if os.path.exists(save_path_X) and os.path.exists(save_path_Y) and \
+#           os.path.exists(save_path_Z) and os.path.exists(save_path_VM):
+#            img_cnt += 1
+#            img_label_cnt += 1
+#            continue
             
         #plot X
-        fig, axs = plt.subplots(1, 1, figsize=(fig_w,fig_h))
-        plt.axis('off')
         x = np.array([acc_x])
-
         X_gadf = gadf.fit_transform(x)
 
-        axs.imshow(X_gadf[0],
-                   cmap='rainbow',
-                  origin='lower')
-        axs.axis('off')
-        plt.savefig(save_path_X, bbox_inches='tight',pad_inches = 0, dpi=100);
-        print(j,img_cnt,figure_name_GAF_X) 
-        fig.clf()
-        plt.close(fig) 
-
+        plt.imsave(save_path_X, X_gadf[0], cmap='rainbow', origin='lower')
 
         #plot Y
-        fig, axs = plt.subplots(1, 1, figsize=(fig_w,fig_h))
-        plt.axis('off')
         y = np.array([acc_y])
-    
         Y_gadf = gadf.fit_transform(y)
 
-        axs.imshow(Y_gadf[0],
-                   cmap='rainbow',
-                  origin='lower')
-        axs.axis('off')
-        plt.savefig(save_path_Y, bbox_inches='tight',pad_inches = 0, dpi=100);
-        print(j,img_cnt,figure_name_GAF_Y) 
-        fig.clf()
-        plt.close(fig) 
+        plt.imsave(save_path_Y, Y_gadf[0], cmap='rainbow', origin='lower')
 
         
         #plot Z
-        fig, axs = plt.subplots(1, 1, figsize=(fig_w,fig_h))
-        plt.axis('off')
         z = np.array([acc_z])
-        
-        z_gadf = gadf.fit_transform(z)
+        Z_gadf = gadf.fit_transform(z)
 
-        axs.imshow(z_gadf[0],
-                   cmap='rainbow',
-                  origin='lower')
-        axs.axis('off')
-        plt.savefig(save_path_Z, bbox_inches='tight',pad_inches = 0, dpi=100);
-        print(j,img_cnt,figure_name_GAF_Z) 
-        fig.clf()
-        plt.close(fig)
+        plt.imsave(save_path_Z, Z_gadf[0], cmap='rainbow', origin='lower')
         
-             
-                
-        #plot VM
-        fig, axs = plt.subplots(1, 1, figsize=(fig_w,fig_h))
-        plt.axis('off')
-        v = np.array([acc_VM])
-        
-        v_gadf = gadf.fit_transform(v)
-
-        axs.imshow(v_gadf[0],
-                   cmap='rainbow',
-                  origin='lower')
-        axs.axis('off')
-        plt.savefig(save_path_VM, bbox_inches='tight',pad_inches = 0, dpi=100);
-        print(j,img_cnt,figure_name_GAF_VM) 
-        fig.clf()
-        plt.close(fig)     
                 
         img_cnt+=1
         img_label_cnt+=1

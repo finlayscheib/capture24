@@ -1,0 +1,44 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2024 The MathWorks, Inc.
+             R2024a Update 4 (24.1.0.2628055) 64-bit (glnxa64)
+                                May 29, 2024
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+     sleep                 42936 
+     household-chores       7110 
+     sitting               40155 
+     walking                7098 
+     vehicle                5298 
+     mixed-activity         4380 
+     standing               3435 
+     sports                  216 
+     manual-work            1107 
+     bicycling              2079 
+     sleep                 189099 
+     household-chores       31959 
+     sitting               162555 
+     walking                26979 
+     vehicle                16758 
+     mixed-activity         22017 
+     standing               13941 
+     sports                  3336 
+     manual-work             6330 
+     bicycling               4131 
+     sleep                 108036 
+     household-chores       20256 
+     sitting               112122 
+     walking                17472 
+     vehicle                11523 
+     mixed-activity          9651 
+     standing                8322 
+     sports                  1527 
+     manual-work             1908 
+     bicycling               2259 
+ResNet training started
+Predicting test set...
+CNN Accuracy: 0.70711
+confusion matrix

@@ -21,7 +21,7 @@ def extract_windows(data, winsize='30s'):
 
         # Check window has no NaNs and is of correct length
         # 10s @ 100Hz = 1000 ticks
-        if w.isna().any().any() or len(w) != 3000:
+        if w.isna().any().any() or len(w) != 300: #30s at 10 Hz is 300 ticks
             continue
 
         x = w[['x', 'y', 'z']].to_numpy()
@@ -49,10 +49,11 @@ path_GAF=r"/exports/eddie/scratch/s2190468/capture24/data/GAF_ds/" # where GAF i
 # working directory for data
 
 directory_contents = [i for i in os.listdir(path_data) if i.endswith('.csv.gz')] # get the data file names
-print(f"Found {len(directory_contents)} files to process: {directory_contents}") # comment out at end
+
 
 #Initialise GADF method
 gadf = GramianAngularField(image_size=224, method='difference')
+
 p_cnt=1
 for j in (directory_contents):
     print(f"Processing: {j}")
@@ -65,15 +66,25 @@ for j in (directory_contents):
     data['label'] = (anno_label_dict['label:Walmsley2020']
                  .reindex(data['annotation'])
                  .to_numpy())
-
-    X, Y = extract_windows(data) # extract data
-
     # Adding in downsampling step of the windows 100Hz to 10Hz
-    if len(X)==0:
-        continue
-    X = resample_poly(X, up=10, down = 100, axis=1)
-
-    participant_folder = f'P{p_cnt:03}' # Creates "P001", "P002", etc.
+    tri_ax_raw = data[['x','y','z']].to_numpy()
+    tri_ax_resample = resample_poly(tri_ax_raw, up=10, down=100, axis=0)
+    
+    labels_resampled = data['label'].iloc[::10].to_numpy()
+    time_resampled = data.index[::10]
+    
+    min_len = min(len(tri_ax_resampled), len(labels_resampled))
+        
+    data = pd.DataFrame(
+      tri_ax_resample[:min_len], 
+      columns=['x', 'y', 'z'], 
+      index=time_resampled[:min_len]
+        )
+    data['label'] = labels_resampled[:min_len]
+    
+    X, Y = extract_windows(data) # extract data
+    
+    participant_folder = f'P{p_cnt:03}' # Creates folder for each participant
     participant_path = os.path.join(path_GAF, participant_folder)
     os.makedirs(participant_path, exist_ok=True)
     
@@ -82,9 +93,9 @@ for j in (directory_contents):
     img_label_cnt=0
     for i in X:
       
-        acc_x=i[:,0] # get x from the array
-        acc_y=i[:,1] # get y from the array
-        acc_z=i[:,2] # get z from the array
+        acc_x=i[:,0] # get x, y, z from the array
+        acc_y=i[:,1]
+        acc_z=i[:,2] 
         
         
 
@@ -97,12 +108,7 @@ for j in (directory_contents):
         save_path_Y = os.path.join(participant_path, figure_name_GAF_Y)
         save_path_Z = os.path.join(participant_path, figure_name_GAF_Z)
         
-        
-#        if os.path.exists(save_path_X) and os.path.exists(save_path_Y) and \
-#           os.path.exists(save_path_Z) and os.path.exists(save_path_VM):
-#            img_cnt += 1
-#            img_label_cnt += 1
-#            continue
+
             
         #plot X
         x = np.array([acc_x])
